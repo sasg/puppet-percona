@@ -1,0 +1,6 @@
+## !!!! Managed by Puppet !!!!
+[client]
+host     = localhost
+user     = <%= scope.lookupvar('percona::mysql_monitor_user') %>
+password = <%= scope.lookupvar('percona::mysql_monitor_password') %>
+socket   = <%= scope.lookupvar('percona::mysql_socket') %>

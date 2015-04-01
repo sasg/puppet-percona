@@ -1,0 +1,18 @@
+## !!!! Managed by Puppet !!!!
+                               
+# Copyright (C) 2012 Coedership Oy
+# This config file is to be sourced by garb service script. 
+
+<% nodes = @data.has_key?('nodes') ? @data['nodes'] : [] -%>
+# A space-separated list of node addresses (address[:port]) in the cluster 
+GALERA_NODES="<%= (nodes.size > 1 ? nodes : nodes.join.split(/,\s*/)).sort.map{|a| "#{a}:4567"}.join(' ') %>"
+
+# Galera cluster name, should be the same as on the rest of the nodes.
+GALERA_GROUP="<%= @data['wsrep_cluster_name'] %>"
+
+# Optional Galera internal options string (e.g. SSL settings)
+# see http://www.codership.com/wiki/doku.php?id=galera_parameters
+GALERA_OPTIONS="<%= @data['garbd_options'] %>"
+
+# Log file for garbd. Optional, by default logs to syslog
+LOG_FILE="<%= @data['garbd_log_directory'] %>/<%= @data['wsrep_cluster_name'] %>_garbd.log"

@@ -1,0 +1,65 @@
+[mysqld]
+
+##
+## WSREP options
+##
+
+# Full path to wsrep provider library or 'none'
+wsrep_provider = "<%= @data['wsrep_provider_path'] %>"
+
+# Parameters to configure the plugin
+wsrep_provider_options = "<%= @data['wsrep_provider_options'] %>"
+
+<% nodes = @data.has_key?('nodes') ? @data['nodes'] : [] -%>
+# Specify the nodes and options here
+wsrep_cluster_address="gcomm://<%= nodes.sort.join(',').delete(' ') %>?<%= @data['wsrep_cluster_options'] %>"
+<%- unless @data['wsrep_provider_options'] %>
+# Provider specific configuration options
+wsrep_provider_options = "<%= @data['wsrep_provider_options'] %>"
+<%- end %>
+# Logical cluster name. Should be the same for all nodes.
+wsrep_cluster_name = "<%= @data['wsrep_cluster_name'] %>"
+
+# This variable is used to specify the network address of the node. 
+# In some cases when there are multiple NICs available, state transfer 
+# might not work if the default NIC is on different network. 
+# Setting this variable explicitly to the correct value will makes SST and IST work correctly out of the box. 
+# Even in the multi-network setups, IST/SST can be configured to use other interfaces/addresses.
+wsrep_node_address = "<%= @data['wsrep_node_address'] %>"
+
+# Human-readable node name (non-unique). Hostname by default.
+wsrep_node_name = "<%= @data['wsrep_node_name'] %>"
+
+# How many threads will process writesets from other nodes
+wsrep_slave_threads = <%= @data['processorcount'].to_i * 2 %>
+
+##
+## WSREP State Transfer options
+##
+
+# State Snapshot Transfer method
+wsrep_sst_method = "<%= @data['wsrep_sst_method'] %>"
+<%- if @data['wsrep_sst_method'] =~ /(xtrabackup|mysqldump)/ %>
+# SST authentication string. This will be used to send SST to joining nodes.
+# Depends on SST method. For mysqldump method it is root:<root password>
+wsrep_sst_auth="<%= @data['wsrep_sst_username'] %>:<%= @data['wsrep_sst_password'] %>"
+<%- end %>
+
+# (This must be substituted by wsrep_format)
+binlog_format=ROW
+
+# Currently only InnoDB storage engine is supported
+default-storage-engine=InnoDB
+
+# Query Cache is not supported with wsrep
+query_cache_size=0
+query_cache_type=0
+
+#...........................................................
+# WSREP Additional
+#...........................................................
+<% if @data['config_wsrep_additional'].is_a?(Array) && @data['config_wsrep_additional'].size >= 2 -%>
+<% Hash[*@data['config_wsrep_additional']].sort.each do |k,v| -%>
+<%= "#{k} = #{v}" %>
+<% end -%>
+<% end -%>

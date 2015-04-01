@@ -1,0 +1,135 @@
+## !!!! Managed by Puppet !!!!
+
+[mysqld]
+
+##
+## MySQL Config
+##
+
+# Override bind-address
+bind-address=0.0.0.0
+
+datadir  = <%= @data['mysql_datadir'] %>
+socket   = <%= @data['mysql_socket'] %>
+tmpdir   = <%= @data['mysql_tmpdir'] %>
+pid-file = <%= @data['mysql_piddir'] %>/mysqld.pid
+user     = mysql
+
+max_allowed_packet                       = 64M
+max_connections                          = 300
+
+character-set-server                     = 'utf8'
+collation-server                         = 'utf8_general_ci'
+
+join_buffer_size                         = 512K 
+
+transaction-isolation                    = 'READ-COMMITTED'
+
+thread_cache_size                        = 50
+
+explicit_defaults_for_timestamp          = TRUE
+
+#...........................................................
+# InnoDB Settings
+#...........................................................
+
+innodb_autoinc_lock_mode		 = 2
+
+innodb_buffer_pool_size                  = <%= ((@data['memorysize_mb'].to_i - @data['reserved_os_memory'].to_i) * 0.8).floor %>M
+
+innodb_file_per_table                    = 1
+innodb_data_file_path                    = ibdata1:128M:autoextend
+innodb_file_format                       = Barracuda 
+innodb_open_files                        = 1000
+
+innodb_flush_log_at_trx_commit           = 2
+innodb_flush_method                      = O_DIRECT
+
+innodb_log_files_in_group                = 3
+innodb_log_file_size                     = 256M
+innodb_log_buffer_size                   = 8M
+
+innodb_read_io_threads                   = <%= @data['processorcount'].to_i * 4 %>
+innodb_write_io_threads                  = <%= @data['processorcount'].to_i * 4 %>
+
+#...........................................................
+# MyISAM Settings
+#...........................................................
+
+key_buffer_size                          = <%= ((mem = (@memorysize_mb.to_i - @reserved_os_memory.to_i) * 0.1).floor) >= 256 ? 256 : mem.to_i %>M
+myisam-recover-options                   = BACKUP,FORCE
+myisam_sort_buffer_size                  = 16M
+
+#...........................................................
+# Logging
+#...........................................................
+
+log-error                                = <%= @data['mysql_logdir'] %>/<%= @data['hostname'] %>-err.log
+log-warnings                             = 2
+log-output                               = FILE
+
+general_log                              = 0
+general_log_file                         = <%= @data['mysql_logdir'] %>/<%= @data['hostname'] %>-general.log
+
+slow-query-log                           = 0
+slow_query_log_file                      = <%= @data['mysql_logdir'] %>/<%= @data['hostname'] %>-slow.log
+log-queries-not-using-indexes            = 0
+long_query_time                          = 10
+
+#...........................................................
+# Binlog
+#...........................................................
+
+log-bin                                  = <%= @data['mysql_binlogdir'] %>/<%= @data['hostname'] %>-bin
+max_binlog_size                          = 256M
+binlog_cache_size                        = 256K
+max_binlog_files                         = 20
+expire_logs_days                         = 7
+log-slave-updates
+
+#...........................................................
+# MySQL Additional
+#...........................................................
+<% if @data['config_mysqld_additional'].is_a?(Array) && @data['config_mysqld_additional'].size >= 2 -%>
+<% Hash[*@data['config_mysqld_additional']].sort.each do |k,v| -%>
+<%= "#{k} = #{v}" %>
+<% end -%>
+<% end -%>
+
+#...........................................................
+#
+# MySQL Client
+#
+#...........................................................
+[client]
+socket                                   = <%= @data['mysql_socket'] %>
+
+#...........................................................
+# mysql
+#...........................................................
+[mysql]
+socket                                   = <%= @data['mysql_socket'] %>
+default-character-set                    = 'utf8'
+
+#...........................................................
+# mysqldump
+#...........................................................
+[mysqldump]
+max_allowed_packet                       = 256M
+default-character-set                    = 'utf8'
+socket                                   = <%= @data['mysql_socket'] %>
+log-error                                = <%= @data['mysql_logdir'] %>/<%= @data['hostname'] %>-mysqldump-err.log
+
+[sst]
+progress=<%= @data['mysql_logdir'] %>/sst_progress.log
+time=1
+
+#...........................................................
+# END
+#...........................................................
+
+#
+# include all files from the config directory
+#
+!includedir /etc/my.cnf.d
+

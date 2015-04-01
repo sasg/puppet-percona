@@ -1,0 +1,10 @@
+## !!!! Managed by Puppet !!!!
+<%= scope.lookupvar('percona::mysql_logdir') %>/*.log { 
+  create 640 mysql mysql 
+  daily
+  copytruncate
+  notifempty 
+  rotate 8
+  missingok 
+  compress 
+}

@@ -1,0 +1,18 @@
+####### This file is managed by Puppet #######
+#
+# default: on
+# description: mysqlchk
+service mysqlchk
+{
+        flags           = REUSE
+        socket_type     = stream
+        port            = 9223
+        wait            = no
+        user            = nobody
+        server          = /usr/bin/clustercheck
+        server_args     = <%= scope.lookupvar('percona::mysql_monitor_user') %> <%= scope.lookupvar('percona::mysql_monitor_password') %> 1 /dev/null 0
+        log_type        = FILE /dev/null
+        disable         = no
+        only_from       = 0.0.0.0/0
+        per_source      = UNLIMITED
+}
