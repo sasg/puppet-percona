@@ -1,5 +1,5 @@
 name    'puppet-percona'
-version '0.1'
+version '0.0.1'
 source 'git@github.com:filiadatagmbh/puppet-percona.git'
 author 'FILIADATA GmbH <lx-github@dm.de>'
 license 'Apache License 2.0'
