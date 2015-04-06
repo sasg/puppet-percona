@@ -1,0 +1,43 @@
+# This file is managed centrally by modulesync
+#   https://gitlab.dm-drogeriemarkt.com/puppet/filiadata-modulesync
+
+## MAC OS
+.DS_Store
+
+## TEXTMATE
+*.tmproj
+tmtags
+
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+*.swo
+tags
+
+## Bundler
+Gemfile.lock
+.bundle
+vendor/
+
+## rbenv / rvm
+.rbenv*
+.rvmrc*
+.ruby-*
+
+## rspec
+spec/fixtures/
+
+## Puppet module
+pkg/
+coverage/
+<% if ! @configs['paths'].nil? -%>
+
+# Module-specific paths
+<% @configs['paths'].each do |path| -%>
+<%= path %>
+<% end -%>
+<% end -%>
