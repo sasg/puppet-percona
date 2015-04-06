@@ -1,0 +1,51 @@
+{
+  "name": "filiadata-percona",
+  "version": "0.0.1",
+  "author": "filiadata",
+  "summary": "Installs, configures, and manages percona xtradb cluster.",
+  "license": "Apache-2.0",
+  "source": "git@github.com:FILIADATAGmbH/puppet-percona.git",
+  "project_page": "https://github.com/FILIADATAGmbH/puppet-percona",
+  "issues_url": "https://github.com/FILIADATAGmbH/puppet-percona/issues",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
+  "description": "Module for Percona XtraDB Cluster",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.2"},
+    {"name":"richardc/datacat","version_requirement":">= 0.6.1"}
+  ]
+}
