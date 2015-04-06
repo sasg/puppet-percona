@@ -53,17 +53,17 @@ class percona::monitor {
     owner   => 'nobody',
     group   => 'nobody',
     mode    => '0640',
-    notify  => Service["${name}-xinetd"],
+    notify  => Service['xinetd'],
     content => template('percona/monitor/mysqlchk.xinetd.erb'),
   }
-  ->
 
-  service { "${name}-xinetd":
-    ensure     => running,
-    name       => 'xinetd',
-    hasrestart => true,
-    hasstatus  => true,
-    enable     => true,
+  if ! defined(Service['xinetd']) {
+    service { 'xinetd':
+      ensure     => running,
+      hasrestart => true,
+      hasstatus  => true,
+      enable     => true,
+      require    => File["${name}-xinetd_mysqlchk"],
+    }
   }
-
 }

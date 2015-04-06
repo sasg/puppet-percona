@@ -32,6 +32,8 @@ class percona::create_arbitrator {
     fail('Please define an arbitrator or activate exported resources')
   }
 
+  ## Can not have "$name" as part of resource naming because of exported resources 
+  ## for create_node and create_arbitrator
   datacat { $percona::garbd_config_file:
     ensure   => file,
     path     => $percona::garbd_config_file,

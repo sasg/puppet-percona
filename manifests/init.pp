@@ -102,13 +102,6 @@
 #    mysql_monitor_password => 'mmonitor_pw',
 #  }
 #
-#  (only for XtraDB Cluster)
-#  You have to create a file which initiate the cluster DB prepare
-#  #> /bin/touch /prepare_db 
-#  #> puppet agent -t
-#
-#  The file will be deleted automatically
-#
 #
 # ## For Percona Garbd with exported resource support
 #  class {'percona':

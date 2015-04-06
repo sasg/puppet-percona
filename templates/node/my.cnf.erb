@@ -7,13 +7,13 @@
 ##
 
 # Override bind-address
-bind-address=0.0.0.0
+bind-address                             = 0.0.0.0
 
-datadir  = <%= @data['mysql_datadir'] %>
-socket   = <%= @data['mysql_socket'] %>
-tmpdir   = <%= @data['mysql_tmpdir'] %>
-pid-file = <%= @data['mysql_piddir'] %>/mysqld.pid
-user     = mysql
+datadir                                  = <%= @data['mysql_datadir'] %>
+socket                                   = <%= @data['mysql_socket'] %>
+tmpdir                                   = <%= @data['mysql_tmpdir'] %>
+pid-file                                 = <%= @data['mysql_piddir'] %>/mysqld.pid
+user                                     = mysql
 
 max_allowed_packet                       = 64M
 max_connections                          = 300
@@ -33,8 +33,6 @@ explicit_defaults_for_timestamp          = TRUE
 # InnoDB Settings
 #...........................................................
 
-innodb_autoinc_lock_mode		 = 2
-
 innodb_buffer_pool_size                  = <%= ((@data['memorysize_mb'].to_i - @data['reserved_os_memory'].to_i) * 0.8).floor %>M
 
 innodb_file_per_table                    = 1
@@ -42,7 +40,6 @@ innodb_data_file_path                    = ibdata1:128M:autoextend
 innodb_file_format                       = Barracuda 
 innodb_open_files                        = 1000
 
-innodb_flush_log_at_trx_commit           = 2
 innodb_flush_method                      = O_DIRECT
 
 innodb_log_files_in_group                = 3
@@ -88,7 +85,7 @@ expire_logs_days                         = 7
 log-slave-updates
 
 #...........................................................
-# MySQL Additional
+# MySQL Additional or Overrides
 #...........................................................
 <% if @data['config_mysqld_additional'].is_a?(Array) && @data['config_mysqld_additional'].size >= 2 -%>
 <% Hash[*@data['config_mysqld_additional']].sort.each do |k,v| -%>
@@ -119,10 +116,6 @@ max_allowed_packet                       = 256M
 default-character-set                    = 'utf8'
 socket                                   = <%= @data['mysql_socket'] %>
 log-error                                = <%= @data['mysql_logdir'] %>/<%= @data['hostname'] %>-mysqldump-err.log
-
-[sst]
-progress=<%= @data['mysql_logdir'] %>/sst_progress.log
-time=1
 
 #...........................................................
 # END
