@@ -5,7 +5,7 @@ define percona::mysql_config (
 ) {
 
   datacat_fragment { "${name}-${percona::mysql_config_file}_fragment":
-    target => $percona::mysql_config_file,
+    target => "${name}-${percona::mysql_config_file}",
     data   => {
       config_mysqld_additional => [ $name, $value ],
     },

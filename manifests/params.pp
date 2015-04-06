@@ -11,7 +11,7 @@ class percona::params {
   $node_list                = ''
 
   ## Memory in MB
-  $reserved_os_memory       = '1024'
+  $reserved_os_memory       = '256'
 
   ## Galera Nodes Variables
   $wsrep_cluster_name       = 'GALERA_CLUSTER'

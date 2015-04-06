@@ -20,7 +20,8 @@ define percona::mysql_query (
 
   if ( $query != '' ) {
     exec { "${name}-query":
-      command   => "/usr/bin/mysql ${client_auth_option} -e \"${query}\"",
+      path      => ['/usr/bin','/bin',],
+      command   => "mysql ${client_auth_option} -e \"${query}\"",
       logoutput => 'on_failure',
       onlyif    => $exec_onlyif,
     }

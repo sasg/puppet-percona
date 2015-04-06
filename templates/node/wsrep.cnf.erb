@@ -12,7 +12,7 @@ wsrep_provider_options = "<%= @data['wsrep_provider_options'] %>"
 
 <% nodes = @data.has_key?('nodes') ? @data['nodes'] : [] -%>
 # Specify the nodes and options here
-wsrep_cluster_address="gcomm://<%= nodes.sort.join(',').delete(' ') %>?<%= @data['wsrep_cluster_options'] %>"
+wsrep_cluster_address = "gcomm://<%= nodes.sort.join(',').delete(' ') %>?<%= @data['wsrep_cluster_options'] %>"
 <%- unless @data['wsrep_provider_options'] %>
 # Provider specific configuration options
 wsrep_provider_options = "<%= @data['wsrep_provider_options'] %>"
@@ -42,24 +42,41 @@ wsrep_sst_method = "<%= @data['wsrep_sst_method'] %>"
 <%- if @data['wsrep_sst_method'] =~ /(xtrabackup|mysqldump)/ %>
 # SST authentication string. This will be used to send SST to joining nodes.
 # Depends on SST method. For mysqldump method it is root:<root password>
-wsrep_sst_auth="<%= @data['wsrep_sst_username'] %>:<%= @data['wsrep_sst_password'] %>"
+wsrep_sst_auth = "<%= @data['wsrep_sst_username'] %>:<%= @data['wsrep_sst_password'] %>"
 <%- end %>
 
 # (This must be substituted by wsrep_format)
-binlog_format=ROW
+binlog_format = ROW
 
 # Currently only InnoDB storage engine is supported
-default-storage-engine=InnoDB
+default-storage-engine = InnoDB
 
 # Query Cache is not supported with wsrep
-query_cache_size=0
-query_cache_type=0
+query_cache_size = 0
+query_cache_type = 0
+
+# When innodb_autoinc_lock_mode is set to traditional lock mode, 
+# indicated by 0, or to consecutive lock mode, indicated by 1, 
+# in Galera Cluster it can cause unresolved deadlocks and make the system unresponsive.
+innodb_autoinc_lock_mode = 2
+
+# While setting innodb_flush_log_at_trx_commit to a value of 0 or 2 improves performance, 
+# it also introduces certain dangers. Operating system crashes or power outages can erase 
+# the last second of transaction. Although normally you can recover this data from another node, 
+# it can still be lost entirely in the event that the cluster goes down at the same time, 
+# (for instance, in the event of a data center power outage).
+innodb_flush_log_at_trx_commit = 0
 
 #...........................................................
-# WSREP Additional
+# WSREP Additional or Overrides
 #...........................................................
 <% if @data['config_wsrep_additional'].is_a?(Array) && @data['config_wsrep_additional'].size >= 2 -%>
 <% Hash[*@data['config_wsrep_additional']].sort.each do |k,v| -%>
 <%= "#{k} = #{v}" %>
 <% end -%>
 <% end -%>
+
+[sst]
+progress                                 = <%= @data['mysql_logdir'] %>/sst_progress.log
+time                                     = 1
+inno-backup-opts                         = '--no-backup-locks'
