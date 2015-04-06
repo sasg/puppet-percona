@@ -70,7 +70,7 @@ class percona::create_node {
   }
 
   unless str2bool($::percona_db_prepared) {
-    class { 'percona::prepare_db':
+    class { '::percona::prepare_db':
       require => Exec["${name}-mysql_install_db"],
     }
   }

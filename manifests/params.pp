@@ -8,7 +8,7 @@ class percona::params {
   $db_galera                = false
 
   $exported_resource        = true
-  $node_list                = ''
+  $node_list                = undef
 
   ## Memory in MB
   $reserved_os_memory       = '256'

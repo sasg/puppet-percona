@@ -1,7 +1,7 @@
 # == Define percona::mysql_config
 #
 define percona::mysql_config (
-  $value = '',
+  $value = undef,
 ) {
 
   datacat_fragment { "${name}-${percona::mysql_config_file}_fragment":

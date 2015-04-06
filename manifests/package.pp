@@ -11,33 +11,33 @@ class percona::package {
             ensure => present,
           }
         }
-  
+
         if ! defined(Package['pv']) {
           package {'pv':
             ensure => present,
           }
         }
-  
+
         if ! defined(Package['socat']) {
           package {'socat':
             ensure => present,
           }
         }
-  
+
         if $percona::is_arbitrator {
-  
+
           package {'Percona-XtraDB-Cluster-garbd-3':
             ensure => present,
           }
-  
+
         } else {
-  
+
           if ! defined(Package['xinetd']) {
             package {'xinetd':
               ensure => present,
             }
           }
-  
+
           package {"Percona-XtraDB-Cluster-full-${percona::percona_version}":
             ensure => present,
           }

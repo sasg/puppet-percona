@@ -2,7 +2,7 @@
 #
 class percona::prepare_db {
 
-  include percona::virtual::service
+  include ::percona::virtual::service
 
   $db_default_user = 'root'
 

@@ -2,7 +2,7 @@
 #
 class percona::create_standalone {
 
-  include percona::virtual::service
+  include ::percona::virtual::service
 
   exec { "${name}-mysql_install_db":
     command => '/usr/bin/mysql_install_db',
@@ -16,7 +16,7 @@ class percona::create_standalone {
   }
 
   unless str2bool($::percona_db_prepared) {
-    class { 'percona::prepare_db':
+    class { '::percona::prepare_db':
       require => Service[$percona::mysql_service_name],
     }
   }

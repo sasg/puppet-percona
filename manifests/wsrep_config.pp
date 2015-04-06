@@ -1,7 +1,7 @@
 # == Define percona::wsrep_config
 #
 define percona::wsrep_config (
-  $value = '',
+  $value = undef,
 ) {
 
   datacat_fragment { "${name}-${percona::wsrep_config_file}_fragment":

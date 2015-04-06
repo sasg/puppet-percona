@@ -6,7 +6,7 @@ class percona::create {
 
     if $percona::is_arbitrator {
       anchor {"${name}::begin": }             ->
-      class  {'percona::create_arbitrator': } ->
+      class  {'::percona::create_arbitrator': } ->
       anchor {"${name}::end": }
     } else {
 
@@ -16,15 +16,15 @@ class percona::create {
       }
 
       anchor {"${name}::begin": }          ->
-      class  {'percona::create_db_base': } ->
-      class  {'percona::create_node': }    ->
-      class  {'percona::monitor': }        ->
+      class  {'::percona::create_db_base': } ->
+      class  {'::percona::create_node': }    ->
+      class  {'::percona::monitor': }        ->
       anchor {"${name}::end": }
     }
   } else {
     anchor {"${name}::begin": }             ->
-    class  {'percona::create_db_base': }    ->
-    class  {'percona::create_standalone': } ->
+    class  {'::percona::create_db_base': }    ->
+    class  {'::percona::create_standalone': } ->
     anchor {"${name}::end": }
   }
 
