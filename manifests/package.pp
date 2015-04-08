@@ -6,23 +6,7 @@ class percona::package {
     'redhat': {
 
       if $percona::db_galera {
-        if ! defined(Package['nc']) {
-          package {'nc':
-            ensure => present,
-          }
-        }
-
-        if ! defined(Package['pv']) {
-          package {'pv':
-            ensure => present,
-          }
-        }
-
-        if ! defined(Package['socat']) {
-          package {'socat':
-            ensure => present,
-          }
-        }
+        ensure_packages(['nc', 'pv', 'socat'])
 
         if $percona::is_arbitrator {
 
@@ -31,12 +15,7 @@ class percona::package {
           }
 
         } else {
-
-          if ! defined(Package['xinetd']) {
-            package {'xinetd':
-              ensure => present,
-            }
-          }
+          ensure_packages('xinetd')
 
           package {"Percona-XtraDB-Cluster-full-${percona::percona_version}":
             ensure => present,
