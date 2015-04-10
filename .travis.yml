@@ -18,3 +18,14 @@ matrix:
     env: PUPPET_GEM_VERSION="~> 3.7.0"
 notifications:
   email: false
+deploy:
+  provider: puppetforge
+  user: filiadata
+  password:
+    secure: "mTVjgH8oqkVg10/kW54C/KeJdvqQ6MK0/snlCZ08NUD2xnLSjGNbQTeC5Ji95B/tTKk3GbB9owiF2fQ0HYkvQpwxMmuFoSUR+dXn1vXXhrw8ucr6E9e41GA8DbHXLpp95fLa1C+oNTdnQ+D+rnAwlm5E0YVbkIanh6gu5iQd1YE="
+  on:
+    tags: true
+    # all_branches is required to use tags
+    all_branches: true
+    # Only publish if our main Ruby target builds
+    rvm: 1.9.3
