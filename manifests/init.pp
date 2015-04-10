@@ -88,7 +88,7 @@
 # === Examples
 #
 #  ## For Percona XtraDB Cluster with exported resource support
-#  class {'percona':
+#  class { '::percona':
 #    db_galera              => true,
 #    exported_resource      => true,
 #    reserved_os_memory     => 128,
@@ -104,7 +104,7 @@
 #
 #
 # ## For Percona Garbd with exported resource support
-#  class {'percona':
+#  class { '::percona':
 #    db_galera              => true,
 #    is_arbitrator          => true,
 #    exported_resource      => true,
@@ -113,19 +113,19 @@
 #
 #
 #  ## For Percona XtraDB Server (Standalone) with exported resource support
-#  class {'percona':
+#  class { '::percona':
 #    reserved_os_memory     => 128,
 #    mysql_admin_user       => 'mroot',
 #    mysql_admin_password   => 'mroot_pw',
 #  }
 #
 #  ## Set additional parameter in my.cnf config
-#  mysql_config {'server-id':
+#  mysql_config { 'server-id':
 #    value => 16,
-#  )
-#  mysql_config {'master-host':
+#  }
+#  mysql_config { 'master-host':
 #    value => '10.55.3.1',
-#  )
+#  }
 #
 # === Authors
 #
