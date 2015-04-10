@@ -57,13 +57,19 @@ class percona::monitor {
     content => template('percona/monitor/mysqlchk.xinetd.erb'),
   }
 
-  if ! defined(Service['xinetd']) {
-    service { 'xinetd':
-      ensure     => running,
-      hasrestart => true,
-      hasstatus  => true,
-      enable     => true,
-      require    => File["${name}-xinetd_mysqlchk"],
+  ensure_resource('service', 'xinetd', {'ensure'     => 'running'})
+
+  if ! getparam(Service['xinetd'], 'enable') {
+    Service['xinetd'] {
+      enable => true,
     }
   }
+
+  if ! getparam(Service['xinetd'], 'hasrestart') {
+    Service['xinetd'] {
+      hasrestart => true,
+    }
+  }
+
+  File["${name}-xinetd_mysqlchk"] -> Service['xinetd']
 }
