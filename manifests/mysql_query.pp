@@ -12,13 +12,13 @@ define percona::mysql_query (
     $client_auth_option = '' # lint:ignore:empty_string_assignment
   }
 
-  if ( ! $onlyif ) {
+  if ( $onlyif ) {
     $exec_onlyif = $onlyif
   } else {
     $exec_onlyif = '/bin/true'
   }
 
-  if ( ! $query ) {
+  if ( $query ) {
     exec { "${name}-query":
       path      => ['/usr/bin','/bin',],
       command   => "mysql ${client_auth_option} -e \"${query}\"",
