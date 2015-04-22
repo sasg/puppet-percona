@@ -21,10 +21,15 @@ For Percona XtraDB Cluster with exported resource support
     db_galera              => true,
     exported_resource      => true,
     reserved_os_memory     => 128,
-    wsrep_cluster_name     => 'percona_test',
-    wsrep_sst_method       => 'xtrabackup-v2',
-    wsrep_sst_username     => 'sst',
-    wsrep_sst_password     => 'sst_pw',
+    wsrep_cnf              => {
+      mysqld => {
+        wsrep_cluster_name => 'percona_test',
+        wsrep_sst_method   => 'xtrabackup-v2',
+        wsrep_sst_auth     => 'sst_user:78sdu4538',
+        wsrep_node_name    => "${::hostname}_${::ipaddress_eth1}",
+        wsrep_node_address => "${::ipaddress_eth1}",
+      },
+    },
     mysql_admin_user       => 'mroot',
     mysql_admin_password   => 'mroot_pw',
     mysql_monitor_user     => 'mmonitor',
@@ -36,10 +41,14 @@ For Percona Garbd with exported resource support
 
 ```puppet
   class { '::percona':
-    db_galera              => true,
-    is_arbitrator          => true,
-    exported_resource      => true,
-    wsrep_cluster_name     => 'percona_test',
+    db_galera         => true,
+    is_arbitrator     => true,
+    exported_resource => true,
+    wsrep_cnf         => {
+      mysqld => {
+        wsrep_cluster_name => 'percona_test',
+      },
+    },
   }
 ```
 

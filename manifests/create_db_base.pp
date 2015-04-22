@@ -31,7 +31,7 @@ class percona::create_db_base {
   }
   ->
 
-  datacat { "${name}-${percona::mysql_config_file}":
+  datacat { $percona::mysql_config_file:
     ensure   => file,
     path     => $percona::mysql_config_file,
     owner    => 'mysql',
@@ -42,25 +42,14 @@ class percona::create_db_base {
   ->
 
   datacat_fragment { "${name}-${percona::mysql_config_file}_fragment":
-    target => "${name}-${percona::mysql_config_file}",
-    data   => {
-      hostname           => $::hostname,
-      memorysize_mb      => $::memorysize_mb,
-      mysql_binlogdir    => $percona::mysql_binlogdir,
-      mysql_datadir      => $percona::mysql_datadir,
-      mysql_logdir       => $percona::mysql_logdir,
-      mysql_piddir       => $percona::mysql_piddir,
-      mysql_socket       => $percona::mysql_socket,
-      mysql_tmpdir       => $percona::mysql_tmpdir,
-      processorcount     => $::processorcount,
-      reserved_os_memory => $percona::reserved_os_memory,
-    },
+    target => $percona::mysql_config_file,
+    data   => $percona::mysql_cnf_hash,
   }
   ->
 
   file { "${name}-logrotate":
     ensure  => file,
-    path    => '/etc/logrotate.d/galera',
+    path    => '/etc/logrotate.d/percona',
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -87,18 +76,49 @@ class percona::create_db_base {
   }
   ->
 
-  exec { "${name}-${percona::mysql_dbdir}_mkdir":
-    command => "/bin/mkdir -p ${percona::mysql_dbdir}",
-    onlyif  => "/usr/bin/test ! -d ${percona::mysql_dbdir}",
+  exec { "${name}-${percona::mysql_datadir}_mkdir":
+    command => "/bin/mkdir -p ${percona::mysql_datadir}",
+    onlyif  => "/usr/bin/test ! -d ${percona::mysql_datadir}",
   }
   ->
 
-  file { "${name}-${percona::mysql_dbdir}":
+  exec { "${name}-${percona::mysql_socketdir}_mkdir":
+    command => "/bin/mkdir -p ${percona::mysql_socketdir}",
+    onlyif  => "/usr/bin/test ! -d ${percona::mysql_socketdir}",
+  }
+  ~>
+
+  ## To ensure socket directory has the right permission
+  file { "${name}-${percona::mysql_socketdir}":
     ensure => directory,
-    path   => $percona::mysql_dbdir,
+    path   => $percona::mysql_socketdir,
     owner  => 'mysql',
     group  => 'mysql',
     mode   => '0755',
+  }
+  ->
+
+  exec { "${name}-${percona::mysql_tmpdir}_mkdir":
+    command => "/bin/mkdir -p ${percona::mysql_tmpdir}",
+    onlyif  => "/usr/bin/test ! -d ${percona::mysql_tmpdir}",
+  }
+  ->
+
+  exec { "${name}-${percona::mysql_logdir}_mkdir":
+    command => "/bin/mkdir -p ${percona::mysql_logdir}",
+    onlyif  => "/usr/bin/test ! -d ${percona::mysql_logdir}",
+  }
+  ->
+
+  exec { "${name}-${percona::mysql_binlogdir}_mkdir":
+    command => "/bin/mkdir -p ${percona::mysql_binlogdir}",
+    onlyif  => "/usr/bin/test ! -d ${percona::mysql_binlogdir}",
+  }
+  ->
+
+  exec { "${name}-${percona::mysql_piddir}_mkdir":
+    command => "/bin/mkdir -p ${percona::mysql_piddir}",
+    onlyif  => "/usr/bin/test ! -d ${percona::mysql_piddir}",
   }
   ->
 

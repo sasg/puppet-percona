@@ -1,10 +1,10 @@
 ## !!!! Managed by Puppet !!!!
-<%= scope.lookupvar('percona::garbd_log_directory') %>/<%= scope.lookupvar('percona::wsrep_cluster_name') %>_garbd.log { 
-  create 640 nobody nobody 
+<%= @garbd_log_directory %>/<%= @wsrep_cluster_name %>_garbd.log {
+  create 640 nobody nobody
   daily
   copytruncate
-  notifempty 
+  notifempty
   rotate 8
-  missingok 
-  compress 
+  missingok
+  compress
 }

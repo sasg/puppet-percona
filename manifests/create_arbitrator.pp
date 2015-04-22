@@ -2,25 +2,29 @@
 #
 class percona::create_arbitrator {
 
+  $garbd_log_directory   = $percona::garbd_log_directory
+  $wsrep_cluster_options = $percona::wsrep_cluster_options
+  $wsrep_cluster_name    = $percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']
+
   if str2bool($percona::exported_resource) == true {
 
     @@datacat_fragment { "${name}-${::fqdn}_garb":
       target => $percona::garbd_config_file,
       data   => {
-        nodes => [ $percona::node_ip ],
+        nodes => [ $percona::wsrep_cnf_hash['mysqld']['wsrep_node_address'] ],
       },
-      tag    => "galera_wsrep_${percona::wsrep_cluster_name}",
+      tag    => "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}",
     }
 
     @@datacat_fragment { "${name}-${::fqdn}_mysql":
       target => $percona::wsrep_config_file,
       data   => {
-        nodes => [ $percona::node_ip ],
+        nodes => [ $percona::wsrep_cnf_hash['mysqld']['wsrep_node_address'] ],
       },
-      tag    => "galera_wsrep_${percona::wsrep_cluster_name}",
+      tag    => "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}",
     }
 
-    Datacat_fragment <<| tag == "galera_wsrep_${percona::wsrep_cluster_name}" |>>
+    Datacat_fragment <<| tag == "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}" |>>
   } elsif $percona::node_list {
     datacat_fragment { "${name}-arbitrator_members":
       target => $percona::garbd_config_file,
@@ -32,7 +36,7 @@ class percona::create_arbitrator {
     fail('Please define an arbitrator or activate exported resources')
   }
 
-  ## Can not have "$name" as part of resource naming because of exported resources 
+  ## Can not have "$name" as part of resource naming because of exported resources
   ## for create_node and create_arbitrator
   datacat { $percona::garbd_config_file:
     ensure   => file,
@@ -47,9 +51,9 @@ class percona::create_arbitrator {
   datacat_fragment { "${name}-arbitrator_options":
     target => $percona::garbd_config_file,
     data   => {
-      garbd_log_directory => $percona::garbd_log_directory,
-      garbd_options       => $percona::garbd_options,
-      wsrep_cluster_name  => $percona::wsrep_cluster_name,
+      garbd_log_directory   => $garbd_log_directory,
+      wsrep_cluster_options => $wsrep_cluster_options,
+      wsrep_cluster_name    => $wsrep_cluster_name,
     },
   }
   ->
