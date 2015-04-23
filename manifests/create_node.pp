@@ -2,27 +2,24 @@
 #
 class percona::create_node {
 
-  ## We only support x86_64 plattform
-  $wsrep_provider_path = '/usr/lib64/galera3/libgalera_smm.so'
-
   if str2bool($percona::exported_resource) == true {
     @@datacat_fragment { "${name}-${::fqdn}_garb":
       target => $percona::garbd_config_file,
       data   => {
-        nodes => [ $percona::node_ip ],
+        nodes => [ $percona::wsrep_cnf_hash['mysqld']['wsrep_node_address'] ],
       },
-      tag    => "galera_wsrep_${percona::wsrep_cluster_name}",
+      tag    => "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}",
     }
 
     @@datacat_fragment { "${name}-${::fqdn}_mysql":
       target => $percona::wsrep_config_file,
       data   => {
-        nodes => [ $percona::node_ip ],
+        nodes => [ $percona::wsrep_cnf_hash['mysqld']['wsrep_node_address'] ],
       },
-      tag    => "galera_wsrep_${percona::wsrep_cluster_name}",
+      tag    => "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}",
     }
 
-    Datacat_fragment <<| tag == "galera_wsrep_${percona::wsrep_cluster_name}" |>>
+    Datacat_fragment <<| tag == "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}" |>>
   } elsif $percona::node_list {
     datacat_fragment { "${name}-db_members":
       target => $percona::wsrep_config_file,
@@ -48,19 +45,7 @@ class percona::create_node {
 
   datacat_fragment { "${name}-${percona::wsrep_config_file}_fragment":
     target => $percona::wsrep_config_file,
-    data   => {
-      mysql_logdir           => $percona::mysql_logdir,
-      processorcount         => $::processorcount,
-      wsrep_cluster_name     => $percona::wsrep_cluster_name,
-      wsrep_cluster_options  => $percona::wsrep_cluster_options,
-      wsrep_node_address     => $percona::node_ip,
-      wsrep_node_name        => $percona::wsrep_node_name,
-      wsrep_provider_options => $percona::wsrep_provider_options,
-      wsrep_provider_path    => $wsrep_provider_path,
-      wsrep_sst_method       => $percona::wsrep_sst_method,
-      wsrep_sst_password     => $percona::wsrep_sst_password,
-      wsrep_sst_username     => $percona::wsrep_sst_username,
-    },
+    data   => $percona::wsrep_cnf_hash,
   }
   ->
 
