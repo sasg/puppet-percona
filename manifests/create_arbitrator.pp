@@ -5,26 +5,27 @@ class percona::create_arbitrator {
   $garbd_log_directory   = $percona::garbd_log_directory
   $wsrep_cluster_options = $percona::wsrep_cluster_options
   $wsrep_cluster_name    = $percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']
+  $wsrep_node_address    = $percona::wsrep_cnf_hash['mysqld']['wsrep_node_address']
 
   if str2bool($percona::exported_resource) == true {
 
     @@datacat_fragment { "${name}-${::fqdn}_garb":
       target => $percona::garbd_config_file,
       data   => {
-        nodes => [ $percona::wsrep_cnf_hash['mysqld']['wsrep_node_address'] ],
+        nodes => [ $wsrep_node_address ],
       },
-      tag    => "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}",
+      tag    => "galera_wsrep_${wsrep_cluster_name}",
     }
 
     @@datacat_fragment { "${name}-${::fqdn}_mysql":
       target => $percona::wsrep_config_file,
       data   => {
-        nodes => [ $percona::wsrep_cnf_hash['mysqld']['wsrep_node_address'] ],
+        nodes => [ $wsrep_node_address ],
       },
-      tag    => "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}",
+      tag    => "galera_wsrep_${wsrep_cluster_name}",
     }
 
-    Datacat_fragment <<| tag == "galera_wsrep_${percona::wsrep_cnf_hash['mysqld']['wsrep_cluster_name']}" |>>
+    Datacat_fragment <<| tag == "galera_wsrep_${wsrep_cluster_name}" |>>
   } elsif $percona::node_list {
     datacat_fragment { "${name}-arbitrator_members":
       target => $percona::garbd_config_file,
