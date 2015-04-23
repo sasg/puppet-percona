@@ -1,6 +1,6 @@
 {
   "name": "filiadata-percona",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "author": "filiadata",
   "summary": "Installs, configures, and manages percona xtradb cluster.",
   "license": "Apache-2.0",
