@@ -27,7 +27,7 @@ For Percona XtraDB Cluster with exported resource support
         wsrep_sst_method   => 'xtrabackup-v2',
         wsrep_sst_auth     => 'sst_user:78sdu4538',
         wsrep_node_name    => "${::hostname}_${::ipaddress_eth1}",
-        wsrep_node_address => "${::ipaddress_eth1}",
+        wsrep_node_address => $::ipaddress_eth1,
       },
     },
     mysql_admin_user       => 'mroot',
