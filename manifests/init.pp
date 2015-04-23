@@ -89,7 +89,7 @@
 #  }
 #
 #
-#  ## For Percona XtraDB Server (Standalone) with exported resource support
+#  ## For Percona XtraDB Server (Standalone)
 #  class { '::percona':
 #    reserved_os_memory     => 128,
 #    mysql_admin_user       => 'mroot',

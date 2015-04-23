@@ -52,7 +52,7 @@ For Percona Garbd with exported resource support
   }
 ```
 
-For Percona XtraDB Server (Standalone) with exported resource support
+For Percona XtraDB Server (Standalone)
 
 ```puppet
   class { '::percona':
