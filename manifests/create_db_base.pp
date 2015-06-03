@@ -2,23 +2,19 @@
 #
 class percona::create_db_base {
 
-  file { "${name}-etc_facter":
-    ensure => directory,
-    path   => '/etc/facter',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-  }
-  ->
+  $facter_directories = [
+    '/etc/facter',
+    '/etc/facter/facts.d',
+  ]
 
-  file { "${name}-etc_facter_facts_d":
+  $facter_directories_params = {
     ensure => directory,
-    path   => '/etc/facter/facts.d',
     owner  => 'root',
     group  => 'root',
     mode   => '0755',
   }
-  ->
+
+  ensure_resource('file', $facter_directories, $facter_directories_params)
 
   file { "${name}-my_cnf_d_dir":
     ensure  => directory,
@@ -28,6 +24,7 @@ class percona::create_db_base {
     mode    => '0755',
     purge   => true,
     recurse => true,
+    require => File[$facter_directories],
   }
   ->
 
@@ -73,6 +70,16 @@ class percona::create_db_base {
     group   => 'mysql',
     mode    => '0640',
     content => template('percona/node/admin_auth.cnf.erb'),
+  }
+
+  ->
+  file { "${name}-client_admin_auth_file_root_home":
+    ensure => link,
+    path   => "${::root_home}/.my.cnf",
+    target => '/etc/my.cnf.d/client/admin_auth.cnf',
+    owner  => 'mysql',
+    group  => 'mysql',
+    mode   => '0640',
   }
   ->
 
