@@ -74,6 +74,16 @@ class percona::create_db_base {
     mode    => '0640',
     content => template('percona/node/admin_auth.cnf.erb'),
   }
+
+  ->
+  file { "${name}-client_admin_auth_file_root_home":
+    ensure  => file,
+    path    => "${::root_home}/.my.cnf",
+    owner   => 'mysql',
+    group   => 'mysql',
+    mode    => '0640',
+    content => template('percona/node/admin_auth.cnf.erb'),
+  }
   ->
 
   exec { "${name}-${percona::mysql_datadir}_mkdir":
