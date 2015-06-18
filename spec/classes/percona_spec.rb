@@ -55,7 +55,8 @@ describe 'percona', :type => :class do
   end
   context 'with unsupported osfamily' do
     let :facts do
-      { :osfamily        => 'Darwin',
+      { :osfamily               => 'Darwin',
+        :operatingsystem        => 'Darwin',
         :operatingsystemrelease => '13.1.0',
         :concat_basedir         => '/dne',
         :is_pe                  => false,
@@ -65,7 +66,7 @@ describe 'percona', :type => :class do
     it do
       expect {
         catalogue
-      }.to raise_error(Puppet::Error, /Unsupported osfamily Darwin/)
+      }.to raise_error(Puppet::Error, /Unsupported platform: percona currently doesn't support Darwin or Darwin/)
     end
   end
 end

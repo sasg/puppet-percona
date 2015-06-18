@@ -2,15 +2,26 @@
 #
 class percona::prepare_db {
 
-  include ::percona::virtual::service
-
   $db_default_user = 'root'
 
   if $percona::db_galera {
 
+    if ($::percona::service_provider == 'systemd') {
+
+      file { '/etc/sysconfig/mysql.prepare':
+        ensure  => file,
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        content => 'EXTRA_ARGS=" --wsrep-provider=none"',
+        before  => Exec["${name}-mysqld_start_for_grants"],
+      }
+
+    }
+
     exec { "${name}-mysqld_start_for_grants":
       path    => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
-      command => 'service mysql start --wsrep-provider=none',
+      command => $::percona::prepare_start_cmd,
       before  => Percona::Mysql_query["${name}-add_admin_user"],
     }
     ->
@@ -24,8 +35,9 @@ class percona::prepare_db {
       query   => "GRANT USAGE,PROCESS ON *.* TO '${percona::mysql_monitor_user}'@'localhost' IDENTIFIED BY '${percona::mysql_monitor_password}';",
     }
 
-    Service <| title == $percona::mysql_service_name |> {
-      ensure  => stopped,
+    exec { "${name}-mysqld_stop":
+      path    => '/bin/:/sbin/:/usr/bin/:/usr/sbin/',
+      command => $::percona::prepare_stop_cmd,
       require => Percona::Mysql_query["${name}-remove_default_user_localhost"],
     }
 

@@ -53,6 +53,12 @@
 #[*wsrep_cluster_options*]
 #   to add wsrep options to gcomm string
 #
+#[*automatic_bootstrap*]
+#   to bootstrap a galera cluster automagically
+#
+#[*bootstrapnode*]
+#   are we the node that should be started with bootstrap-pxc
+#
 # === Examples
 #
 #  ## For Percona XtraDB Cluster with exported resource support
@@ -133,6 +139,9 @@ class percona (
   $mysql_monitor_password = $percona::params::mysql_monitor_password,
 
   $wsrep_cluster_options  = $percona::params::wsrep_cluster_options,
+
+  $automatic_bootstrap    = false,
+  $bootstrapnode          = false,
 
 ) inherits percona::params {
 
