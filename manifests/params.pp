@@ -115,4 +115,36 @@ class percona::params {
 
   $wsrep_cluster_options    = 'pc.wait_prim=no'
 
+  ## OS Switches
+
+  case $::osfamily {
+    'RedHat': {
+      if ($::operatingsystem != 'Amazon')
+      and (($::operatingsystem != 'Fedora' and versioncmp($::operatingsystemrelease, '7.0') >= 0)
+      or  ($::operatingsystem == 'Fedora' and versioncmp($::operatingsystemrelease, '15') >= 0)) {
+        $service_provider = 'systemd'
+      } else {
+        $service_provider = undef
+      }
+    }
+    default: {
+      fail("Unsupported platform: ${module_name} currently doesn't support ${::osfamily} or ${::operatingsystem}")
+    }
+  }
+
+  ## Service Provider
+  case $service_provider {
+    'systemd': {
+      $bootstrap_start_cmd = 'systemctl start mysql@bootstrap.service'
+      $bootstrap_stop_cmd = 'systemctl stop mysql@bootstrap.service && systemctl start mysql.service'
+      $prepare_start_cmd = 'systemctl start mysql@prepare.service'
+      $prepare_stop_cmd = 'systemctl stop mysql@prepare.service'
+    }
+    default: {
+      $bootstrap_start_cmd = "service ${mysql_service_name} bootstrap-pxc"
+      $bootstrap_stop_cmd = "service ${mysql_service_name} restart"
+      $prepare_start_cmd = "service ${::percona::mysql_service_name} --wsrep-provider=none"
+      $prepare_stop_cmd = "service ${::percona::mysql_service_name} stop"
+    }
+  }
 }

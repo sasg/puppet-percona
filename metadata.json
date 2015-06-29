@@ -1,6 +1,6 @@
 {
   "name": "filiadata-percona",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "author": "filiadata",
   "summary": "Installs, configures, and manages percona xtradb cluster.",
   "license": "Apache-2.0",
@@ -46,6 +46,7 @@
   "description": "Module for Percona XtraDB Cluster",
   "dependencies": [
     {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.2"},
-    {"name":"richardc/datacat","version_requirement":">= 0.6.1"}
+    {"name":"richardc/datacat","version_requirement":">= 0.6.1"},
+    {"name":"dalen/puppetdbquery","version_requirement":">= 1.5.3"}
   ]
 }

@@ -2,5 +2,6 @@ fixtures:
   repositories:
     stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
     datacat: "https://github.com/richardc/puppet-datacat.git"
+    puppetdbquery: "https://github.com/dalen/puppet-puppetdbquery.git"
   symlinks:
     percona: "#{source_dir}"
