@@ -143,8 +143,8 @@ class percona::params {
     default: {
       $bootstrap_start_cmd = "service ${mysql_service_name} bootstrap-pxc"
       $bootstrap_stop_cmd = "service ${mysql_service_name} restart"
-      $prepare_start_cmd = "service ${::percona::mysql_service_name} --wsrep-provider=none"
-      $prepare_stop_cmd = "service ${::percona::mysql_service_name} stop"
+      $prepare_start_cmd = "service ${mysql_service_name} start --wsrep-provider=none"
+      $prepare_stop_cmd = "service ${mysql_service_name} stop"
     }
   }
 }
