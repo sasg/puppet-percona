@@ -53,18 +53,15 @@ class percona::create_node {
     command => '/usr/bin/mysql_install_db',
     onlyif  => "/usr/bin/test ! -d ${percona::mysql_datadir}/mysql",
   }
+  ->
 
-  unless str2bool($::percona_db_prepared) {
-    class { '::percona::prepare_db':
-      require => Exec["${name}-mysql_install_db"],
-    }
-  }
+  class { '::percona::prepare_db': }
 
   if $::percona::automatic_bootstrap {
-    anchor {"${name}::begin": }          ->
-    class  {'::percona::automatic_bootstrap':
+    anchor { "${name}::begin": } ->
+    class  { '::percona::automatic_bootstrap':
       require => Class['::percona::prepare_db'],
     } ->
-    anchor {"${name}::end": }
+    anchor { "${name}::end": }
   }
 }
