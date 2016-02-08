@@ -157,6 +157,9 @@ class percona (
   validate_string($mysql_admin_password)
   validate_string($mysql_monitor_user)
   validate_string($mysql_monitor_password)
+  validate_string($wsrep_cluster_options)
+  validate_bool($automatic_bootstrap)
+  validate_bool($bootstrapnode)
 
   ## Merge mysql_cnf and wsrep_cnf with the default values from params.pp
   ## And for datacat, we cannot use facts directly, therefore added hash elements with fact information
@@ -189,9 +192,25 @@ class percona (
   $mysql_binlogdir = dirname($mysql_cnf_hash['mysqld']['log-bin'])
   $mysql_piddir    = dirname($mysql_cnf_hash['mysqld']['pid-file'])
 
+  $facter_directories = [
+    '/etc/facter',
+    '/etc/facter/facts.d',
+  ]
+
+  $facter_directories_params = {
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+
+  ensure_resource('file', $facter_directories, $facter_directories_params)
+
   anchor {"${name}::begin":}
   -> class  {"${name}::package":}
-  -> class  {"${name}::create":}
+  -> class  {"${name}::create":
+    require => File[$facter_directories],
+  }
   -> anchor {"${name}::end":}
 
 }
