@@ -2,20 +2,6 @@
 #
 class percona::create_db_base {
 
-  $facter_directories = [
-    '/etc/facter',
-    '/etc/facter/facts.d',
-  ]
-
-  $facter_directories_params = {
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-  }
-
-  ensure_resource('file', $facter_directories, $facter_directories_params)
-
   file { "${name}-my_cnf_d_dir":
     ensure  => directory,
     path    => '/etc/my.cnf.d',
@@ -24,7 +10,6 @@ class percona::create_db_base {
     mode    => '0755',
     purge   => true,
     recurse => true,
-    require => File[$facter_directories],
   }
   ->
 

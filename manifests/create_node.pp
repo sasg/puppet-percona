@@ -56,9 +56,16 @@ class percona::create_node {
   ->
 
   class { '::percona::prepare_db': }
+  ->
+
+  file { "${name}-is_galera_node":
+    ensure  => file,
+    path    => '/etc/facter/facts.d/is_galera_node.txt',
+    content => 'is_galera_node=true',
+  }
 
   if $::percona::automatic_bootstrap {
-    anchor { "${name}::begin": } ->
+    anchor { "${name}::begin": }                 ->
     class  { '::percona::automatic_bootstrap':
       require => Class['::percona::prepare_db'],
     } ->

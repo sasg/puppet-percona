@@ -78,6 +78,13 @@ class percona::create_arbitrator {
   }
   ->
 
+  file { "${name}-is_galera_arbitrator":
+    ensure  => file,
+    path    => '/etc/facter/facts.d/is_galera_arbitrator.txt',
+    content => 'is_galera_arbitrator=true',
+  }
+  ->
+
   service { "${name}-${percona::garbd_service_name}":
     name   => $percona::garbd_service_name,
     enable => true,
