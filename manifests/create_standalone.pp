@@ -8,6 +8,13 @@ class percona::create_standalone {
   }
   ->
 
+  file { "${name}-is_mysql_standalone":
+    ensure  => file,
+    path    => '/etc/facter/facts.d/is_mysql_standalone.txt',
+    content => 'is_mysql_standalone=true',
+  }
+  ->
+
   service { $::percona::mysql_service_name:
     ensure => running,
     enable => true,

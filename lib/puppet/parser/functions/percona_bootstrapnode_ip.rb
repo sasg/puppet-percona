@@ -26,7 +26,7 @@ module Puppet::Parser::Functions
         if qry_res.is_a?(Hash)
           qry_res = qry_res.values[0][0]['parameters']
         else
-          qry_res = qry_res['parameters']
+          qry_res = qry_res[0]['parameters']
         end
 
         raise(Puppet::ParseError, "percona_bootstrapnode_ip(): Can not find parameter ip.") unless qry_res.has_key?('ip')

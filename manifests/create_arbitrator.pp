@@ -86,6 +86,7 @@ class percona::create_arbitrator {
   ->
 
   service { "${name}-${percona::garbd_service_name}":
+    ensure => running,
     name   => $percona::garbd_service_name,
     enable => true,
   }

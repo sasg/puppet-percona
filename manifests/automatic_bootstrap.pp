@@ -97,7 +97,7 @@ class percona::automatic_bootstrap {
 
         service { $::percona::mysql_service_name:
           ensure  => running,
-          enable  => false,
+          enable  => true,
           require => Percona_conn_validator['bootstrap-node'],
         }
         ->
